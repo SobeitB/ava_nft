@@ -2,24 +2,66 @@ import { ethers } from "hardhat";
 import path from 'path';
 import * as fs from "fs";
 const hre = require('hardhat');
+require('dotenv').config()
+
+const getEnvVar = (key: string) => {
+  console.log(process.env[key])
+  if (process.env[key] === undefined) {
+    throw new Error(`Env variable ${key} is required`);
+  }
+  return process.env[key] || "";
+};
 
 async function main() {
-  const currentTimestampInSeconds = Math.round(Date.now() / 1000);
-  const ONE_YEAR_IN_SECS = 365 * 24 * 60 * 60;
-  const unlockTime = currentTimestampInSeconds + ONE_YEAR_IN_SECS;
+  const [owner] = await ethers.getSigners();
 
-  const lockedAmount = ethers.utils.parseEther("1");
+  const ogSignature = new ethers.Wallet(getEnvVar("PRIVATE_KEY_OG"))
+  const wlSignature = new ethers.Wallet(getEnvVar("PRIVATE_KEY_WL"))
 
-  const Lock = await ethers.getContractFactory("Lock");
-  const lock = await Lock.deploy(unlockTime, { value: lockedAmount });
+  const Ava = await ethers.getContractFactory("AvaJarvis");
+  const AvaJarvis = await Ava.deploy('localhost://3000/', ogSignature.address, wlSignature.address);
 
-  await lock.deployed();
+  await AvaJarvis.deployed();
 
-  console.log(`address - ${lock.address}`);
+  console.log(`address - ${AvaJarvis.address}`);
 
   saveFrontendFiles({
-    Lock:lock
+    AvaJarvis:AvaJarvis
   })
+
+  const usersOg = [
+    '0x611e46CBA0CF7Cf103a7898F3621101DA8d8f5F0',
+    '0x1Bc9C9414E54c1E61caF73e130bb1dbE48451865'
+  ]
+
+  const signersOg:Record<string, string> = {}
+
+  for await (const contents of
+     usersOg.map(async (account:string) => {
+       const dataHash = ethers.utils.keccak256(account.toLowerCase())
+       const messageBytes = ethers.utils.arrayify(dataHash)
+
+       signersOg[account.toLowerCase()] = await ogSignature.signMessage(messageBytes)
+     })
+  );
+
+  const usersWL = [
+    '0x854F28941dcE2Ec86FC0Ffe84c724cF626EC54Ba',
+  ]
+
+  const signersWL:Record<string, string> = {}
+
+  for await (const contents of
+     usersWL.map(async (account:string) => {
+       const dataHash = ethers.utils.keccak256(account.toLowerCase())
+       const messageBytes = ethers.utils.arrayify(dataHash)
+
+       signersWL[account.toLowerCase()] = await wlSignature.signMessage(messageBytes)
+     })
+  );
+
+  fs.writeFile('../src/shared/lib/contracts/signatureOG.json', JSON.stringify(signersOg), 'utf8', () => {});
+  fs.writeFile('../src/shared/lib/contracts/signatureWL.json', JSON.stringify(signersWL), 'utf8', () => {});
 }
 
 main().catch((error) => {
@@ -46,7 +88,5 @@ function saveFrontendFiles(contracts:any) {
        path.join(contractsDir, '/', name + ".json"),
        JSON.stringify(ContractArtifact, null, 2)
     )
-
-
   })
 }

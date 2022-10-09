@@ -1,11 +1,11 @@
-import {useAppDispatch} from "../../../app/model/hooks";
-import {useCallback, useEffect} from "react";
+import {useAppDispatch} from "app/model/hooks";
+import {useCallback} from "react";
 import {ethers} from "ethers";
-import LockAddress from "../contracts/Lock-contract-address.json";
-import Lock from "../contracts/Lock.json";
-import {blockChainState} from "../../config/type";
-import {setFullSettings} from "../../../app/model/slice/blockChain";
-import {CHAIN_ID_NUMBER} from "../../config";
+import AvaAddress from "../contracts/AvaJarvis-contract-address.json"
+import Ava from "../contracts/AvaJarvis.json";
+import {blockChainState} from "shared/config/type";
+import {setFullSettings} from "app/model/slice/blockChain";
+import {CHAIN_ID_NUMBER} from "shared/config";
 
 export const useSetWeb3Data = () => {
    const {ethereum} = window;
@@ -18,7 +18,7 @@ export const useSetWeb3Data = () => {
       if(accounts.length > 0 && chaiId === CHAIN_ID_NUMBER) {
          const provider = new ethers.providers.Web3Provider(ethereum);
          const signer = provider.getSigner();
-         const Contract = new ethers.Contract(LockAddress.Lock, Lock.abi, provider);
+         const Contract = new ethers.Contract(AvaAddress.AvaJarvis, Ava.abi, signer);
          const balance = +(ethers.utils.formatEther(await provider.getBalance(accounts[0])))
 
          const info:blockChainState = {
@@ -29,6 +29,8 @@ export const useSetWeb3Data = () => {
             contract:initContract === null ? Contract : initContract,
             txBeingSent:false,
             error:false,
+            status:await Contract.status(),
+            totalSupply:Number(ethers.utils.formatEther(await Contract.getTotalSupply()))
          }
 
          dispatch(setFullSettings(info))

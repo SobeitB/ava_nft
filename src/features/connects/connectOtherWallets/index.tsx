@@ -1,5 +1,6 @@
-import {useSetWeb3Data} from "../../shared/lib/setWeb3Data";
+import {useSetWeb3Data} from "shared/lib/setWeb3Data";
 import {connectOtherWallet} from "./model";
+import {Button} from "shared/ui";
 
 export const ConnectOtherWallets = () => {
    const { setData } = useSetWeb3Data();
@@ -11,6 +12,6 @@ export const ConnectOtherWallets = () => {
    }
 
    return(
-      <button onClick={connectWallet}>connect wallets</button>
+      <Button onClick={connectWallet}>connect wallets</Button>
    )
 }

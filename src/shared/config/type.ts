@@ -3,10 +3,12 @@ import {Web3Provider} from "@ethersproject/providers/src.ts/web3-provider";
 
 export interface blockChainState {
    address:string,
-   balance:null | number,
+   balance:number,
    provider:null | Web3Provider,
    contract:null | any,
    signer:null | Signer,
    txBeingSent:boolean,
    error:false | string,
+   status:number,
+   totalSupply:number,
 }

@@ -1,15 +1,13 @@
 import { withProviders } from "./providers";
-import {ConnectMetamask} from "features/connectMetamask";
-import {ConnectOtherWallets} from "features/connectOtherWallets";
 import {InitBlockChainData} from "processes/initWeb3State";
+import {GlobalStyle} from "./styled";
+import {Main} from "widgets/Main";
 
 function App() {
    return (
       <InitBlockChainData>
-         <div className="App">
-            <ConnectMetamask />
-            <ConnectOtherWallets />
-         </div>
+         <GlobalStyle />
+         <Main />
       </InitBlockChainData>
    );
 }

@@ -4,12 +4,14 @@ import {blockChainState} from "../../../../shared/config/type";
 
 const initialState:blockChainState = {
    address: '0x',
-   balance:null,
+   balance:0,
    provider:null,
    contract:null,
    signer:null,
    txBeingSent:false,
    error:false,
+   status:0,
+   totalSupply:0,
 }
 
 export const blockChainSlice = createSlice({
