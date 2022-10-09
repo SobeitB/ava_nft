@@ -30,7 +30,7 @@ export const useSetWeb3Data = () => {
             txBeingSent:false,
             error:false,
             status:await Contract.status(),
-            totalSupply:Number(ethers.utils.formatEther(await Contract.getTotalSupply()))
+            totalSupply:Number(await Contract.getTotalSupply())
          }
 
          dispatch(setFullSettings(info))

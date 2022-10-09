@@ -65,7 +65,6 @@ contract AvaJarvis is ERC721, ERC721Enumerable, ERC721URIStorage, Pausable, Owna
 
 
         require(!paused() && status != STATUS_LIST.NOT_STARTED, "contract paused");
-        require(_tokenId.current() < maxSupply, "all tokens have been sold");
         require(_count > 0, "mint at least one token");
         require(_tokenId.current() + _count <= maxSupply, "not enough tokens left");
         uint balance = balanceOf(msg.sender);

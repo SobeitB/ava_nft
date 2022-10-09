@@ -34,7 +34,7 @@ export const blockChainSlice = createSlice({
          state.txBeingSent = action.payload;
       },
 
-      setError: (state, action: PayloadAction<string>) => {
+      setError: (state, action: PayloadAction<string | false>) => {
          state.error = action.payload;
       },
    },

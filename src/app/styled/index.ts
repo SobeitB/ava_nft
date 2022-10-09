@@ -87,9 +87,6 @@ export const GlobalStyle = createGlobalStyle`
   }
   
   @media (max-width: 480px) {
-    #root{
-      margin: 150px 10px;  
-    }
     
     .container{
       max-width: 320px;

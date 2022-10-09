@@ -15,6 +15,7 @@ export const ButtonCounter = styled.button`
   height: 40px;
   border: 2px solid hsl(252, 56.0%, 57.5%);
   background: none;
+  cursor: pointer;
   border-radius:50%;
   
   color:hsl(252, 56.0%, 57.5%);
